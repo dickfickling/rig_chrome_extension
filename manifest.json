@@ -1,16 +1,21 @@
 {
   "manifest_version": 2,
 
-  "name": "RIG",
-  "description": "",
-  "version": "0.0",
+  "name": "Random Identity Autofill",
+  "description": "Autofill forms on the page with randomly generated identities",
+  "version": "0.0.2",
 
   "permissions": [
-    "http://fickling.us/",
+    "http://randomautofill.com/",
     "activeTab"
   ],
   "browser_action": {
     "default_icon": "icon.png"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
   },
   "background": {
     "scripts" : ["background.js"]
