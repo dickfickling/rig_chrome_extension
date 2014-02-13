@@ -17,22 +17,40 @@ function requestIdentity(callback) {
   xhr.send(null);
 }
 
-function autoFill(identity) {
-  if (!document.forms.length) {
-    alert("Could not find form");
+function checkRegex(element_name) {
+  for (var regex_name in regexes) {
+    var re = new RegExp(regexes[regex_name], "i");
+    if (re.test(element_name)) return regex_name;
   }
-  var form = document.forms[0];
-  form["account[first_name]"].value = identity.first_name;
-  form["account[last_name]"].value = identity.last_name;
-  form["account[email]"].value = identity.email;
-  form["billing_info[address1]"].value = identity.street_address;
-  form["billing_info[city]"].value = identity.city;
-  form["billing_info[state]"].value = identity.state;
-  form["billing_info[zip]"].value = identity.zip;
-  form["billing_info[country]"].value = "US";
-  form["billing_info[number]"].value = identity.credit_card;
-  form["billing_info[verification_value]"].value = identity.cvv;
+  return null;
+}
+
+function autoFill(identity) {
+  for(var form_id in document.forms) {
+    var elements = document.forms[form_id].elements;
+    for (var element_id in elements) {
+      var element = elements[element_id];
+      var regexMatch = checkRegex(element.name);
+      if (!regexMatch) continue;
+
+      element.value = identity[regexMatch];
+    }
+      
+  }
+}
+
+regexes = {
+  street_address: "address.*line|address1|addr1|street",
+  country: "country|countries",
+  zip: "zip|postal|post.*code|pcode",
+  city: "city|town",
+  state: "state",
+  email: "e.?mail",
+  first_name: "first.*name|fname|first",
+  last_name: "last.*name|lname|surname|last$|secondname",
+  phone: "phone|mobile|cell",
+  credit_card: "card.?number|card.?#|card.?no|cc.?num",
+  cvv: "verification|card identification|security code|cvn|cvv|cvc|csc"
 }
 
 requestIdentity(autoFill);
-
